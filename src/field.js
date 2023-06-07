@@ -1,4 +1,5 @@
 const { EventEmitter } = require("events");
+const { addFieldVisualizer } = require("./field-visualizer");
 
 class Field {
   #substances;
@@ -43,8 +44,12 @@ class Field {
     });
   }
 
-  get dimentions() {
-    return { rows: this.#substances.length, cols: this.#substances[0].length };
+  viaualize() {
+    addFieldVisualizer(
+      this.#substances.length,
+      this.#substances[0].length,
+      this
+    );
   }
 
   #makeField(rows, cols) {

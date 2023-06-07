@@ -1,6 +1,6 @@
 const colors = require("colors/safe");
 
-const addFieldVisualizer = (field) => {
+const addFieldVisualizer = (rows, cols, field) => {
   const base = colors.bgGreen("  ");
   const snakeBody = colors.bgBlack("  ");
   const snakeHead = colors.bgBlue("  ");
@@ -28,7 +28,6 @@ const addFieldVisualizer = (field) => {
 
   console.clear();
   console.log("\033[?25l");
-  const {rows, cols} = field.dimentions;
 
   for(let row = 0; row < rows; row++) {
     for(let col = 0; col < cols; col++) {

@@ -61,7 +61,7 @@ class Game {
       setTimeout(tick, delay);
     };
 
-    addFieldVisualizer(this.#field);
+    this.#field.viaualize();
     setTimeout(tick, delay);
     this.#startReadingInput();
   }
