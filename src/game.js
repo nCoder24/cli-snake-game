@@ -1,4 +1,5 @@
 const { Field } = require("./field");
+const { addFieldVisualizer } = require("./field-visualizer");
 const { Snake } = require("./snake");
 
 class Game {
@@ -36,14 +37,16 @@ class Game {
   }
 
   start() {
+    addFieldVisualizer(this.#field);
     const endGame = (message) => {
       console.log(message);
       process.exit();
     };
 
-    const tick = (nextTickDelay) => {
+    let delay = 500;
+
+    const tick = () => {
       this.#snake.move();
-      console.log(this.#field.toString());
 
       if (this.#field.isWall(this.#snake.head)) {
         endGame("Hit The Wall");
@@ -55,13 +58,13 @@ class Game {
 
       if (this.#field.hasFruit(this.#snake.head)) {
         this.#snake.grow();
-        nextTickDelay -= 10;
+        delay -= 10;
       }
 
-      setTimeout(tick, nextTickDelay);
+      setTimeout(tick, delay);
     };
 
-    tick(200);
+    setTimeout(tick, delay);
   }
 }
 

@@ -1,6 +1,9 @@
+const { EventEmitter } = require("events");
+
 class Field {
   #substances;
-  #symbols
+  #symbols;
+  #eventEmitter;
 
   constructor(rows, cols) {
     this.#substances = this.#makeField(rows, cols);
@@ -10,6 +13,16 @@ class Field {
       snakeHead: 2,
       fruit: 3
     }
+
+    this.#eventEmitter = new EventEmitter();
+  }
+
+  on(event, callback) {
+    this.#eventEmitter.addListener(event, callback);
+  }
+
+  get dimentions() {
+    return {rows: this.#substances.length, cols: this.#substances[0].length};
   }
 
   #makeField(rows, cols) {
@@ -18,18 +31,22 @@ class Field {
 
   plantFruit({row, col}) {
     this.#substances[row][col] = this.#symbols.fruit;
+    this.#eventEmitter.emit("plantFruit", {row, col});
   }
 
   placeSnakeBody({row, col}) {
     this.#substances[row][col] = this.#symbols.snakeBody;
+    this.#eventEmitter.emit("placeSnakeBody", {row, col});
   }
 
   placeSnakeHead({row, col}) {
     this.#substances[row][col] = this.#symbols.snakeHead;
+    this.#eventEmitter.emit("placeSnakeHead", {row, col});
   }
 
   erase({row, col}) {
     this.#substances[row][col] = this.#symbols.field;
+    this.#eventEmitter.emit("erase", {row, col});
   }
 
   hasFruit({row, col}) {

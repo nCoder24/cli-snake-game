@@ -1,15 +1,12 @@
 const { EventEmitter } = require("events");
 
 const createDirections = () => {
-  const north = { offset: { row: -1, col: 0 } };
-  const east = { offset: { row: 0, col: 1 } };
-  const south = { offset: { row: 1, col: 0 } };
-  const west = { offset: { row: 0, col: -1 } };
+  const up = { offset: { row: -1, col: 0 } };
+  const right = { offset: { row: 0, col: 1 } };
+  const down = { offset: { row: 1, col: 0 } };
+  const left = { offset: { row: 0, col: -1 } };
 
-  north.left = west;
-  north.right = east;
-
-  return { north, east, south, west };
+  return { up, right, down, left };
 };
 
 class Position {
@@ -40,12 +37,14 @@ class Snake {
   #heading;
   #eventEmitter;
   #isDied;
+  #directions;
 
   constructor() {
     this.#isGrowing = false;
-    this.#positions = [new Position(3, 3), new Position(3, 2)];
-    this.#heading = createDirections().north;
-    this.#eventEmitter = new EventEmitter;
+    this.#positions = [new Position(9, 3), new Position(9, 2), new Position(9, 1)];
+    this.#directions = createDirections();
+    this.#heading = this.#directions.right;
+    this.#eventEmitter = new EventEmitter();
   }
 
   on(event, callback) {
@@ -72,17 +71,9 @@ class Snake {
     return this.#positions[0];
   }
 
-  turnLeft() {
-    this.#heading = this.#heading.left;
-  }
-
-  turnRight() {
-    this.#heading = this.#heading.right;
-  }
-
-  #moveHead() {
+  #moveHead({offset}) {
     const prevHeadPos = this.#head();
-    this.#positions.unshift(this.#head().add(this.#heading.offset));
+    this.#positions.unshift(this.#head().add(offset));
     this.#eventEmitter.emit("headDisplacement", prevHeadPos, this.#head());
   }
 
@@ -91,8 +82,9 @@ class Snake {
     this.#eventEmitter.emit("tailDisplacement", prevTailPos);
   }
 
-  move() {
-    this.#moveHead();
+  move(direction = this.#heading) {
+    this.#heading = direction;
+    this.#moveHead(direction);
 
     if (this.#isGrowing) {
       this.#isGrowing = false;
