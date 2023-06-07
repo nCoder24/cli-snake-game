@@ -51,10 +51,6 @@ class Snake {
     this.#eventEmitter.addListener(event, callback);
   }
 
-  get head() {
-    return this.#positions[0];
-  }
-
   get positions() {
     return this.#positions;
   }
