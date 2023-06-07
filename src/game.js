@@ -7,32 +7,28 @@ class Game {
   #snake;
 
   constructor(rows, cols) {
-    this.#field = new Field(rows, cols);
     this.#snake = new Snake();
-    this.#setField();
+    this.#field = new Field(rows, cols, this.#snake);
   }
 
-  #setField() {
-    const [headPosition, ...bodyPositions] = this.#snake.positions;
-    this.#field.placeSnakeHead(headPosition);
-    bodyPositions.forEach((position) => {
-      this.#field.placeSnakeBody(position);
-    });
-
-    this.#field.plantFruit({ row: 5, col: 5 });
-
-    this.#snake.on("headDisplacement", (prevHeadPos, newHeadPos) => {
-      if (this.#field.isWall(newHeadPos)) {
-        this.#snake.markDead();
-        return;
+  #startReadingInput() {
+    process.stdin.setRawMode(true);
+    process.stdin.setEncoding("utf-8");
+    process.stdin.on("data", (key) => {
+      switch (key) {
+        case "j":
+          this.#snake.move("left");
+          break;
+        case "k":
+          this.#snake.move("down");
+          break;
+        case "l":
+          this.#snake.move("right");
+          break;
+        case "i":
+          this.#snake.move("up");
+          break;
       }
-      this.#field.placeSnakeBody(prevHeadPos);
-      this.#field.placeSnakeHead(newHeadPos);
-    });
-
-    this.#snake.on("tailDisplacement", (prevPos) => {
-      if (this.#snake.isDied) return;
-      this.#field.erase(prevPos);
     });
   }
 
@@ -41,27 +37,6 @@ class Game {
     const endGame = (message) => {
       console.log(message);
       process.exit();
-    };
-
-    const startReadingInput = () => {
-      process.stdin.setRawMode(true);
-      process.stdin.setEncoding("utf-8");
-      process.stdin.on("data", (key) => {
-        switch (key) {
-          case "j":
-            this.#snake.move("left");
-            break;
-          case "k":
-            this.#snake.move("down");
-            break;
-          case "l":
-            this.#snake.move("right");
-            break;
-          case "i":
-            this.#snake.move("up");
-            break;
-        }
-      });
     };
 
     const moveSnake = () => {
@@ -88,7 +63,7 @@ class Game {
 
     addFieldVisualizer(this.#field);
     setTimeout(tick, delay);
-    startReadingInput();
+    this.#startReadingInput();
   }
 }
 
