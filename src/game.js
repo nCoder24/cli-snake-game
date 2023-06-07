@@ -8,9 +8,9 @@ class Game {
 
   constructor(rows, cols) {
     const initialSnakePositions = [
-      {row: 9, col: 3},
-      {row: 9, col: 2},
-      {row: 9, col: 1},
+      { row: 9, col: 3 },
+      { row: 9, col: 2 },
+      { row: 9, col: 1 },
     ];
 
     this.#snake = new Snake(initialSnakePositions);
@@ -45,9 +45,17 @@ class Game {
       process.exit();
     };
 
+    const plantFruit = () => {
+      this.#field.plantFruit({
+        row: Math.floor(Math.random() * 10),
+        col: Math.floor(Math.random() * 10),
+      });
+    };
+
     this.#field.on("collision", (substance) => {
       switch (substance) {
         case "fruit":
+          plantFruit();
           this.#snake.grow();
           delay -= 10;
           break;
@@ -65,6 +73,7 @@ class Game {
       setTimeout(tick, delay);
     };
 
+    plantFruit();
     this.#field.viaualize();
     setTimeout(tick, delay);
     this.#startReadingInput();
