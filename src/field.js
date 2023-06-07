@@ -5,64 +5,91 @@ class Field {
   #symbols;
   #eventEmitter;
 
-  constructor(rows, cols) {
+  constructor(rows, cols, snake) {
     this.#substances = this.#makeField(rows, cols);
     this.#symbols = {
       field: 0,
       snakeBody: 1,
       snakeHead: 2,
-      fruit: 3
-    }
-
+      fruit: 3,
+    };
     this.#eventEmitter = new EventEmitter();
+    this.#addSnake(snake);
   }
 
   on(event, callback) {
     this.#eventEmitter.addListener(event, callback);
   }
 
+  #addSnake(snake) {
+    const [headPosition, ...bodyPositions] = snake.positions;
+    this.#placeSnakeHead(headPosition);
+    bodyPositions.forEach((position) => {
+      this.#placeSnakeBody(position);
+    });
+
+    snake.on("headDisplacement", (prevHeadPos, newHeadPos) => {
+      if (this.isWall(newHeadPos)) {
+        snake.markDead();
+        return;
+      }
+      this.#placeSnakeBody(prevHeadPos);
+      this.#placeSnakeHead(newHeadPos);
+    });
+
+    snake.on("tailDisplacement", (prevTailPos) => {
+      if (snake.isDied) return;
+      this.#erase(prevTailPos);
+    });
+  }
+
   get dimentions() {
-    return {rows: this.#substances.length, cols: this.#substances[0].length};
+    return { rows: this.#substances.length, cols: this.#substances[0].length };
   }
 
   #makeField(rows, cols) {
     return Array.from({ length: rows }, () => new Array(cols).fill(0));
   }
 
-  plantFruit({row, col}) {
-    this.#substances[row][col] = this.#symbols.fruit;
-    this.#eventEmitter.emit("plantFruit", {row, col});
-  }
-
-  placeSnakeBody({row, col}) {
+  #placeSnakeBody({ row, col }) {
     this.#substances[row][col] = this.#symbols.snakeBody;
-    this.#eventEmitter.emit("placeSnakeBody", {row, col});
+    this.#eventEmitter.emit("placeSnakeBody", { row, col });
   }
 
-  placeSnakeHead({row, col}) {
+  #placeSnakeHead({ row, col }) {
     this.#substances[row][col] = this.#symbols.snakeHead;
-    this.#eventEmitter.emit("placeSnakeHead", {row, col});
+    this.#eventEmitter.emit("placeSnakeHead", { row, col });
   }
 
-  erase({row, col}) {
+  #erase({ row, col }) {
     this.#substances[row][col] = this.#symbols.field;
-    this.#eventEmitter.emit("erase", {row, col});
+    this.#eventEmitter.emit("erase", { row, col });
   }
 
-  hasFruit({row, col}) {
+  plantFruit({ row, col }) {
+    this.#substances[row][col] = this.#symbols.fruit;
+    this.#eventEmitter.emit("plantFruit", { row, col });
+  }
+
+  hasFruit({ row, col }) {
     return this.#substances[row][col] === this.#symbols.fruit;
   }
 
-  hasSnakeHead({row, col}) {
+  hasSnakeHead({ row, col }) {
     return this.#substances[row][col] === this.#symbols.snakeHead;
   }
 
-  hasSnakeBody({row, col}) {
+  hasSnakeBody({ row, col }) {
     return this.#substances[row][col] === this.#symbols.snakeBody;
   }
 
-  isWall({row, col}) {
-    return row >= this.#substances.length || col >= this.#substances[0].length || row < 0 || col < 0 ;
+  isWall({ row, col }) {
+    return (
+      row >= this.#substances.length ||
+      col >= this.#substances[0].length ||
+      row < 0 ||
+      col < 0
+    );
   }
 
   toString() {
