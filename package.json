@@ -8,7 +8,7 @@
   "main": "game.js",
   "devDependencies": {},
   "scripts": {
-    "start": "node game.js",
+    "start": "node main.js",
     "test": "node --test"
   },
   "keywords": [

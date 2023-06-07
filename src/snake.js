@@ -1,8 +1,10 @@
+const { EventEmitter } = require("events");
+
 const createDirections = () => {
-  const north = { offset: { row: 0, col: 1 } };
-  const east = { offset: { row: 0, col: -1 } };
-  const south = { offset: { row: -1, col: 0 } };
-  const west = { offset: { row: 1, col: 0 } };
+  const north = { offset: { row: -1, col: 0 } };
+  const east = { offset: { row: 0, col: 1 } };
+  const south = { offset: { row: 1, col: 0 } };
+  const west = { offset: { row: 0, col: -1 } };
 
   north.left = west;
   north.right = east;
@@ -19,6 +21,14 @@ class Position {
     this.#col = col;
   }
 
+  get row() {
+    return this.#row;
+  }
+
+  get col() {
+    return this.#col;
+  }
+
   add({ row, col }) {
     return new Position(this.#row + row, this.#col + col);
   }
@@ -28,36 +38,68 @@ class Snake {
   #isGrowing;
   #positions;
   #heading;
+  #eventEmitter;
+  #isDied;
 
   constructor() {
     this.#isGrowing = false;
-    this.#positions = [new Position(3, 3), new Position(3, 4)];
+    this.#positions = [new Position(3, 3), new Position(3, 2)];
     this.#heading = createDirections().north;
+    this.#eventEmitter = new EventEmitter;
+  }
+
+  on(event, callback) {
+    this.#eventEmitter.addListener(event, callback);
+  }
+
+  get head() {
+    return this.#positions[0];
+  }
+
+  get isDied() {
+    return this.#isDied;
+  }
+
+  markDead() {
+    this.#isDied = true;
+  }
+
+  get positions() {
+    return this.#positions;
+  }
+
+  #head() {
+    return this.#positions[0];
   }
 
   turnLeft() {
     this.#heading = this.#heading.left;
   }
 
-  turnRight() {}
+  turnRight() {
+    this.#heading = this.#heading.right;
+  }
+
+  #moveHead() {
+    const prevHeadPos = this.#head();
+    this.#positions.unshift(this.#head().add(this.#heading.offset));
+    this.#eventEmitter.emit("headDisplacement", prevHeadPos, this.#head());
+  }
+
+  #moveTail() {
+    const prevTailPos = this.#positions.pop();
+    this.#eventEmitter.emit("tailDisplacement", prevTailPos);
+  }
 
   move() {
-    const moveHead = () => {
-      this.#positions.unshift(this.#positions[0].add(this.#heading.offset));
-    };
-
-    const moveTail = () => {
-      this.#positions.pop();
-    };
-
-    moveHead();
+    this.#moveHead();
 
     if (this.#isGrowing) {
       this.#isGrowing = false;
       return;
     }
 
-    moveTail();
+    this.#moveTail();
   }
 }
 
