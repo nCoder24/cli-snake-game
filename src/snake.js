@@ -55,14 +55,6 @@ class Snake {
     return this.#positions[0];
   }
 
-  get isDied() {
-    return this.#isDied;
-  }
-
-  markDead() {
-    this.#isDied = true;
-  }
-
   get positions() {
     return this.#positions;
   }

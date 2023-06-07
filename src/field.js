@@ -31,15 +31,18 @@ class Field {
 
     snake.on("headDisplacement", (prevHeadPos, newHeadPos) => {
       if (this.isWall(newHeadPos)) {
-        snake.markDead();
-        return;
+        this.#eventEmitter.emit("collision", "wall");
       }
+
+      if(this.hasFruit(newHeadPos)) {
+        this.#eventEmitter.emit("collision", "fruit");
+      }
+
       this.#placeSnakeBody(prevHeadPos);
       this.#placeSnakeHead(newHeadPos);
     });
 
     snake.on("tailDisplacement", (prevTailPos) => {
-      if (snake.isDied) return;
       this.#erase(prevTailPos);
     });
   }

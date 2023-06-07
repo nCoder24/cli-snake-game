@@ -39,25 +39,23 @@ class Game {
       process.exit();
     };
 
-    const moveSnake = () => {
-      this.#snake.move();
-
-      if (this.#field.isWall(this.#snake.head)) {
-        endGame("Hit The Wall");
+    this.#field.on("collision", (substance) => {
+      switch (substance) {
+        case "fruit":
+          this.#snake.grow();
+          delay -= 10;
+          break;
+        case "wall":
+          endGame("Hit the wall!");
+          break;
+        case "body":
+          endGame("Eaten Itself!");
+          break;
       }
-
-      if (this.#field.hasSnakeBody(this.#snake.head)) {
-        endGame("Eaten Itself");
-      }
-
-      if (this.#field.hasFruit(this.#snake.head)) {
-        this.#snake.grow();
-        delay -= 10;
-      }
-    };
+    });
 
     const tick = () => {
-      moveSnake();
+      this.#snake.move();
       setTimeout(tick, delay);
     };
 
