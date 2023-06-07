@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "colors": "^1.4.0"
+  },
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "snake game",
+  "main": "game.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node game.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "snake-game"
+  ],
+  "author": "nCoder24",
+  "license": "ISC"
+}
