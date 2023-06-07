@@ -38,6 +38,10 @@ class Field {
         this.#eventEmitter.emit("collision", "fruit");
       }
 
+      if(this.hasSnakeBody(newHeadPos)) {
+        this.#eventEmitter.emit("collision", "body");
+      }
+
       this.#placeSnakeBody(prevHeadPos);
       this.#placeSnakeHead(newHeadPos);
     });
