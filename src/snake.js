@@ -82,9 +82,9 @@ class Snake {
     this.#eventEmitter.emit("tailDisplacement", prevTailPos);
   }
 
-  move(direction = this.#heading) {
-    this.#heading = direction;
-    this.#moveHead(direction);
+  move(direction) {
+    this.#heading = this.#directions[direction] || this.#heading;
+    this.#moveHead(this.#heading);
 
     if (this.#isGrowing) {
       this.#isGrowing = false;

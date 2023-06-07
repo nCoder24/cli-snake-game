@@ -22,7 +22,7 @@ class Game {
     this.#field.plantFruit({ row: 5, col: 5 });
 
     this.#snake.on("headDisplacement", (prevHeadPos, newHeadPos) => {
-      if(this.#field.isWall(newHeadPos)) {
+      if (this.#field.isWall(newHeadPos)) {
         this.#snake.markDead();
         return;
       }
@@ -31,21 +31,40 @@ class Game {
     });
 
     this.#snake.on("tailDisplacement", (prevPos) => {
-      if(this.#snake.isDied) return;
+      if (this.#snake.isDied) return;
       this.#field.erase(prevPos);
     });
   }
 
   start() {
-    addFieldVisualizer(this.#field);
+    let delay = 500;
     const endGame = (message) => {
       console.log(message);
       process.exit();
     };
 
-    let delay = 500;
+    const startReadingInput = () => {
+      process.stdin.setRawMode(true);
+      process.stdin.setEncoding("utf-8");
+      process.stdin.on("data", (key) => {
+        switch (key) {
+          case "j":
+            this.#snake.move("left");
+            break;
+          case "k":
+            this.#snake.move("down");
+            break;
+          case "l":
+            this.#snake.move("right");
+            break;
+          case "i":
+            this.#snake.move("up");
+            break;
+        }
+      });
+    };
 
-    const tick = () => {
+    const moveSnake = () => {
       this.#snake.move();
 
       if (this.#field.isWall(this.#snake.head)) {
@@ -60,11 +79,16 @@ class Game {
         this.#snake.grow();
         delay -= 10;
       }
+    };
 
+    const tick = () => {
+      moveSnake();
       setTimeout(tick, delay);
     };
 
+    addFieldVisualizer(this.#field);
     setTimeout(tick, delay);
+    startReadingInput();
   }
 }
 

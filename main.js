@@ -5,4 +5,5 @@ const main = () => {
   game.start();
 };
 
+
 main();
