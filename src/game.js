@@ -7,7 +7,13 @@ class Game {
   #snake;
 
   constructor(rows, cols) {
-    this.#snake = new Snake();
+    const initialSnakePositions = [
+      {row: 9, col: 3},
+      {row: 9, col: 2},
+      {row: 9, col: 1},
+    ];
+
+    this.#snake = new Snake(initialSnakePositions);
     this.#field = new Field(rows, cols, this.#snake);
   }
 

@@ -9,39 +9,16 @@ const createDirections = () => {
   return { up, right, down, left };
 };
 
-class Position {
-  #row;
-  #col;
-
-  constructor(row, col) {
-    this.#row = row;
-    this.#col = col;
-  }
-
-  get row() {
-    return this.#row;
-  }
-
-  get col() {
-    return this.#col;
-  }
-
-  add({ row, col }) {
-    return new Position(this.#row + row, this.#col + col);
-  }
-}
-
 class Snake {
   #isGrowing;
   #positions;
   #heading;
   #eventEmitter;
-  #isDied;
   #directions;
 
-  constructor() {
+  constructor([...initialPositions]) {
     this.#isGrowing = false;
-    this.#positions = [new Position(9, 3), new Position(9, 2), new Position(9, 1)];
+    this.#positions = initialPositions;
     this.#directions = createDirections();
     this.#heading = this.#directions.right;
     this.#eventEmitter = new EventEmitter();
@@ -61,8 +38,13 @@ class Snake {
 
   #moveHead({offset}) {
     const prevHeadPos = this.#head();
-    this.#positions.unshift(this.#head().add(offset));
-    this.#eventEmitter.emit("headDisplacement", prevHeadPos, this.#head());
+    const newHeadPos = {
+      row: this.#head().row + offset.row,
+      col: this.#head().col + offset.col,
+    };
+
+    this.#positions.unshift(newHeadPos);
+    this.#eventEmitter.emit("headDisplacement", prevHeadPos, newHeadPos);
   }
 
   #moveTail() {
