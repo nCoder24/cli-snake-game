@@ -1,6 +1,3 @@
-const { Field } = require("./field");
-const { Snake } = require("./snake");
-
 class Game {
   #field;
   #snake;
@@ -40,17 +37,10 @@ class Game {
       process.exit();
     };
 
-    const plantFruit = () => {
-      this.#field.plantFruit({
-        row: Math.floor(Math.random() * 10),
-        col: Math.floor(Math.random() * 10),
-      });
-    };
-
     this.#field.on("collision", (substance) => {
       switch (substance) {
         case "fruit":
-          plantFruit();
+          this.#field.plantFruit();
           this.#snake.grow();
           delay -= 100;
           points += 1;
@@ -69,7 +59,7 @@ class Game {
       setTimeout(tick, delay);
     };
 
-    plantFruit();
+    this.#field.plantFruit();
     this.#field.viaualize();
     setTimeout(tick, delay);
     this.#startReadingInput();

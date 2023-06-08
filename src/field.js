@@ -34,11 +34,11 @@ class Field {
         this.#eventEmitter.emit("collision", "wall");
       }
 
-      if(this.hasFruit(newHeadPos)) {
+      if (this.hasFruit(newHeadPos)) {
         this.#eventEmitter.emit("collision", "fruit");
       }
 
-      if(this.hasSnakeBody(newHeadPos)) {
+      if (this.hasSnakeBody(newHeadPos)) {
         this.#eventEmitter.emit("collision", "body");
       }
 
@@ -78,7 +78,20 @@ class Field {
     this.#eventEmitter.emit("erase", { row, col });
   }
 
-  plantFruit({ row, col }) {
+  #isVacant({ row, col }) {
+    return this.#substances[row][col] === this.#symbols.field;
+  }
+
+  plantFruit() {
+    let position;
+    do {
+      position = {
+        row: Math.floor(Math.random() * 10),
+        col: Math.floor(Math.random() * 10),
+      };
+    } while (!this.#isVacant(position));
+
+    const { row, col } = position;
     this.#substances[row][col] = this.#symbols.fruit;
     this.#eventEmitter.emit("plantFruit", { row, col });
   }
