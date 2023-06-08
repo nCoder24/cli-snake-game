@@ -1,3 +1,4 @@
+const { DirectionController } = require("./direction-controller");
 const { Field } = require("./src/field");
 const { Game } = require("./src/game");
 const { Snake } = require("./src/snake");
@@ -11,8 +12,9 @@ const main = () => {
 
   const snake = new Snake(initialSnakePositions);
   const field = new Field(10, 10, snake);
+  const directionController = new DirectionController(process.stdin);
 
-  const game = new Game(snake, field);
+  const game = new Game(snake, field, directionController);
   game.start();
 };
 

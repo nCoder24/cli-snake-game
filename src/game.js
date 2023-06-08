@@ -1,31 +1,12 @@
 class Game {
   #field;
   #snake;
+  #directionController;
 
-  constructor(snake, field) {
+  constructor(snake, field, directionController) {
     this.#snake = snake;
     this.#field = field;
-  }
-
-  #startReadingInput() {
-    process.stdin.setRawMode(true);
-    process.stdin.setEncoding("utf-8");
-    process.stdin.on("data", (key) => {
-      switch (key) {
-        case "j":
-          this.#snake.move("left");
-          break;
-        case "k":
-          this.#snake.move("down");
-          break;
-        case "l":
-          this.#snake.move("right");
-          break;
-        case "i":
-          this.#snake.move("up");
-          break;
-      }
-    });
+    this.#directionController = directionController;
   }
 
   start() {
@@ -33,9 +14,13 @@ class Game {
     let points = 0;
     const endGame = (message) => {
       console.log(message);
-      console.log(points)
+      console.log(points);
       process.exit();
     };
+
+    this.#directionController.on("directionShift", (direction) =>
+      this.#snake.move(direction)
+    );
 
     this.#field.on("collision", (substance) => {
       switch (substance) {
@@ -62,7 +47,7 @@ class Game {
     this.#field.plantFruit();
     this.#field.viaualize();
     setTimeout(tick, delay);
-    this.#startReadingInput();
+    this.#directionController.start();
   }
 }
 
