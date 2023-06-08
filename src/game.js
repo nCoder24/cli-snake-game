@@ -1,20 +1,13 @@
 const { Field } = require("./field");
-const { addFieldVisualizer } = require("./field-visualizer");
 const { Snake } = require("./snake");
 
 class Game {
   #field;
   #snake;
 
-  constructor(rows, cols) {
-    const initialSnakePositions = [
-      { row: 9, col: 3 },
-      { row: 9, col: 2 },
-      { row: 9, col: 1 },
-    ];
-
-    this.#snake = new Snake(initialSnakePositions);
-    this.#field = new Field(rows, cols, this.#snake);
+  constructor(snake, field) {
+    this.#snake = snake;
+    this.#field = field;
   }
 
   #startReadingInput() {
@@ -40,8 +33,10 @@ class Game {
 
   start() {
     let delay = 500;
+    let points = 0;
     const endGame = (message) => {
       console.log(message);
+      console.log(points)
       process.exit();
     };
 
@@ -57,7 +52,8 @@ class Game {
         case "fruit":
           plantFruit();
           this.#snake.grow();
-          delay -= 10;
+          delay -= 100;
+          points += 1;
           break;
         case "wall":
           endGame("Hit the wall!");

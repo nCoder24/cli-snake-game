@@ -3,7 +3,7 @@ const colors = require("colors/safe");
 const addFieldVisualizer = (rows, cols, field) => {
   const base = colors.bgGreen("  ");
   const snakeBody = colors.bgBlack("  ");
-  const snakeHead = colors.bgBlue("  ");
+  const snakeHead = colors.bgRed("  ");
   const fruit = colors.bgGreen("🍎");
 
   paintField = ({ row, col }) => {
