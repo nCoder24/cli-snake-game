@@ -1,21 +1,22 @@
-const { DirectionController } = require("./direction-controller");
-const { Field } = require("./src/field");
 const { Game } = require("./src/game");
+const { DIRECTIONS } = require("./src/direction");
+const { GameController } = require("./src/game-controller");
 const { Snake } = require("./src/snake");
+const EventEmitter = require("events");
 
-const main = () => {
-  const initialSnakePositions = [
-    { row: 9, col: 3 },
-    { row: 9, col: 2 },
-    { row: 9, col: 1 },
+const prepareGame = () => {
+  const parts = [
+    { x: 1, y: 1 },
+    { x: 1, y: 2 },
   ];
 
-  const snake = new Snake(initialSnakePositions);
-  const field = new Field(10, 10, snake);
-  const directionController = new DirectionController(process.stdin);
+  const snake = new Snake(parts, DIRECTIONS.left);
+  const game = new Game(snake);
 
-  const game = new Game(snake, field, directionController);
-  game.start();
+  const inputController = new EventEmitter();
+  inputController.start = () => {};
+  const view = { render: console.log };
+  const gameController = new GameController(game, inputController, view);
+
+  return { gameController, inputController };
 };
-
-main();

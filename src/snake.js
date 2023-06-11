@@ -1,72 +1,43 @@
-const { EventEmitter } = require("events");
-
-const createDirections = () => {
-  const up = { offset: { row: -1, col: 0 } };
-  const right = { offset: { row: 0, col: 1 } };
-  const down = { offset: { row: 1, col: 0 } };
-  const left = { offset: { row: 0, col: -1 } };
-
-  return { up, right, down, left };
+const { directionOffsets } = require("./direction");
+const addCoordinates = ({ x: x1, y: y1 }, { x: x2, y: y2 }) => {
+  return {
+    x: x1 + x2,
+    y: y1 + y2,
+  };
 };
 
 class Snake {
-  #isGrowing;
-  #positions;
+  #parts;
   #heading;
-  #eventEmitter;
-  #directions;
 
-  constructor([...initialPositions]) {
-    this.#isGrowing = false;
-    this.#positions = initialPositions;
-    this.#directions = createDirections();
-    this.#heading = this.#directions.right;
-    this.#eventEmitter = new EventEmitter();
+  constructor(parts, heading) {
+    this.#parts = parts;
+    this.#heading = heading;
   }
 
-  on(event, callback) {
-    this.#eventEmitter.addListener(event, callback);
+  get head() {
+    return this.#parts[0];
   }
 
-  get positions() {
-    return this.#positions;
+  #shiftHead(offset) {
+    const newHead = addCoordinates(this.head, offset);
+    this.#parts.unshift(newHead);
   }
 
-  #head() {
-    return this.#positions[0];
+  #shiftTail() {
+    this.#parts.pop();
   }
 
-  #moveHead({offset}) {
-    const prevHeadPos = this.#head();
-    const newHeadPos = {
-      row: this.#head().row + offset.row,
-      col: this.#head().col + offset.col,
-    };
-
-    this.#positions.unshift(newHeadPos);
-    this.#eventEmitter.emit("headDisplacement", prevHeadPos, newHeadPos);
+  move(direction = this.#heading) {
+    this.#shiftHead(directionOffsets[direction]);
+    this.#shiftTail();
+    this.#heading = direction;
   }
 
-  #moveTail() {
-    const prevTailPos = this.#positions.pop();
-    this.#eventEmitter.emit("tailDisplacement", prevTailPos);
-  }
-
-  grow() {
-    this.#isGrowing = true;
-  }
-
-  move(direction) {
-    this.#heading = this.#directions[direction] || this.#heading;
-    this.#moveHead(this.#heading);
-
-    if (this.#isGrowing) {
-      this.#isGrowing = false;
-      return;
-    }
-
-    this.#moveTail();
+  get parts() {
+    return this.#parts;
+    //TODO: return a copy instead of ref
   }
 }
 
-exports.Snake = Snake;
+module.exports = { Snake };
