@@ -11,7 +11,7 @@ describe("move", () => {
     const expectedCoordinates = new Coordinates(1, 2);
     snake.move(DIRECTIONS.up);
   
-    assert.ok(expectedCoordinates.isSame(snake.head));
+    assert.ok(expectedCoordinates.isSame(snake.parts.head));
   });
 
   it("should shift head towords current direction if direction is not provided", () => {
@@ -20,7 +20,7 @@ describe("move", () => {
     const expectedCoordinates = new Coordinates(0, 1);
     snake.move();
   
-    assert.ok(expectedCoordinates.isSame(snake.head));
+    assert.ok(expectedCoordinates.isSame(snake.parts.head));
   });
 
   //TODO:

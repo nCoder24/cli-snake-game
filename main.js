@@ -11,7 +11,7 @@ const prepareGame = () => {
   const snake = new Snake(parts, DIRECTIONS.left);
   const fieldBounds = {
     lowerBound: new Coordinates(0, 0),
-    upperBound: new Coordinates(10, 10)
+    upperBound: new Coordinates(10, 10),
   };
   const game = new Game(snake, fieldBounds);
 
