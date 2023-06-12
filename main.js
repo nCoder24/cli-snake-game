@@ -1,17 +1,19 @@
+const EventEmitter = require("events");
 const { Game } = require("./src/game");
 const { DIRECTIONS } = require("./src/direction");
 const { GameController } = require("./src/game-controller");
 const { Snake } = require("./src/snake");
-const EventEmitter = require("events");
+const { Coordinates } = require("./src/coordinates");
 
 const prepareGame = () => {
-  const parts = [
-    { x: 1, y: 1 },
-    { x: 1, y: 2 },
-  ];
+  const parts = [new Coordinates(1, 1), new Coordinates(1, 0)];
 
   const snake = new Snake(parts, DIRECTIONS.left);
-  const game = new Game(snake);
+  const fieldBounds = {
+    lowerBound: new Coordinates(0, 0),
+    upperBound: new Coordinates(10, 10)
+  };
+  const game = new Game(snake, fieldBounds);
 
   const inputController = new EventEmitter();
   inputController.start = () => {};

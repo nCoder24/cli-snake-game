@@ -1,8 +1,18 @@
 class Game {
   #snake;
+  #fieldBounds;
 
-  constructor(snake) {
+  constructor(snake, fieldBounds) {
     this.#snake = snake;
+    this.#fieldBounds = fieldBounds;
+  }
+
+  #isSnakeHeadInField() {
+    return this.#snake.parts.head.isInside(this.#fieldBounds);
+  }
+
+  #hasSnakeBittenItself() {
+    return this.#snake.parts.body.some((pos) => pos.isSame(this.#snake.parts.head));
   }
 
   moveSnake(direction) {
@@ -10,7 +20,13 @@ class Game {
   }
 
   get state() {
-    return this.#snake.parts;
+    const state = {};
+    state.isSnakeHeadInField = this.#isSnakeHeadInField();
+    state.hasSnakeBittenItself = this.#hasSnakeBittenItself();
+    state.isOver = state.hasSnakeBittenItself || !state.isSnakeHeadInField;
+    state.snake = this.#snake.parts;
+
+    return state;
   }
 }
 

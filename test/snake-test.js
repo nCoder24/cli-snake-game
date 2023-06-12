@@ -1,23 +1,26 @@
+const assert = require("assert");
 const { describe, it } = require("node:test");
 const { Snake } = require("../src/snake");
-const assert = require("assert");
-const directions = {left: "left", up: "up"};
+const { Coordinates } = require("../src/coordinates");
+const { DIRECTIONS } = require("../src/direction");
 
 describe("move", () => {
   it("should shift head towords given direction", () => {
-    const parts = [{x: 1, y: 1}, {x: 1, y: 2}];
-    const snake = new Snake(parts, directions.left);
-    snake.move(directions.up);
+    const parts = [new Coordinates(1, 1), new Coordinates(1, 0)];
+    const snake = new Snake(parts, DIRECTIONS.left);
+    const expectedCoordinates = new Coordinates(1, 2);
+    snake.move(DIRECTIONS.up);
   
-    assert.deepStrictEqual(snake.head, {x: 1, y: 2});
+    assert.ok(expectedCoordinates.isSame(snake.head));
   });
 
   it("should shift head towords current direction if direction is not provided", () => {
-    const parts = [{x: 1, y: 1}, {x: 1, y: 2}];
-    const snake = new Snake(parts, directions.left);
+    const parts = [new Coordinates(1, 1), new Coordinates(1, 2)];
+    const snake = new Snake(parts, DIRECTIONS.left);
+    const expectedCoordinates = new Coordinates(0, 1);
     snake.move();
   
-    assert.deepStrictEqual(snake.head, {x: 0, y: 1});
+    assert.ok(expectedCoordinates.isSame(snake.head));
   });
 
   //TODO:

@@ -1,15 +1,14 @@
-const DIRECTIONS = {
-  left: "left",
-  right: "right",
-  up: "up",
-  down: "down",
-};
+const { Coordinates } = require("./coordinates");
 
 const directionOffsets = {
-  left: { x: -1, y: 0 },
-  right: { x: 1, y: 0 },
-  up: { x: 0, y: 1 },
-  down: { x: 0, y: -1 },
+  left: new Coordinates(-1, 0),
+  right: new Coordinates(1, 0),
+  up: new Coordinates(0, 1),
+  down: new Coordinates(0, -1),
 };
+
+const DIRECTIONS = Object.fromEntries(
+  Object.keys(directionOffsets).map((dir) => [dir, dir])
+);
 
 module.exports = { DIRECTIONS, directionOffsets };
