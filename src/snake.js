@@ -15,6 +15,10 @@ class Snake {
     //TODO: return a copy instead of ref
   }
 
+  changeHeading(direction) {
+    this.#heading = direction;
+  }
+
   #shiftHead(offset) {
     this.#parts.unshift(this.parts.head.add(offset));
   }
@@ -23,10 +27,9 @@ class Snake {
     this.#parts.pop();
   }
 
-  move(direction = this.#heading) {
-    this.#shiftHead(directionOffsets[direction]);
+  move() {
+    this.#shiftHead(directionOffsets[this.#heading]);
     this.#shiftTail();
-    this.#heading = direction;
   }
 }
 

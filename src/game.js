@@ -15,8 +15,12 @@ class Game {
     return this.#snake.parts.body.some((pos) => pos.isSame(this.#snake.parts.head));
   }
 
-  moveSnake(direction) {
-    this.#snake.move(direction);
+  changeSnakeHeading(direction) {
+    this.#snake.changeHeading(direction);
+  }
+
+  moveSnake() {
+    this.#snake.move();
   }
 
   get state() {
