@@ -1,5 +1,5 @@
 const isWithinRange = (number, upperBound, lowerBound) => {
-  return number > upperBound && number < lowerBound;
+  return number >= upperBound && number <= lowerBound;
 };
 
 class Coordinates {

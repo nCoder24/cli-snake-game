@@ -29,13 +29,17 @@ class KeyboardController extends EventEmitter {
     this.#EOF = EOF;
   }
 
-  start() {
+  pause() {
+    this.#istream.pause();
+    this.emit(EVENTS.istreamPause);
+  }
+
+  resume() {
     this.#istream.setEncoding("utf-8");
     this.#istream.setRawMode(true);
     this.#istream.on("data", (data) => {
       if (data === this.#EOF) {
-        this.#istream.pause();
-        this.emit(EVENTS.istreamPause);
+        this.stop();
         return;
       }
 

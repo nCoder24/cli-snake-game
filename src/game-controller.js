@@ -18,11 +18,14 @@ class GameController {
       this.#game.changeSnakeHeading(direction)
     );
 
-    this.#inputController.start();
+    this.#inputController.resume();
     const interval = this.#scheduler.setInterval(() => {
       this.#game.moveSnake();
       this.#view.render(this.#game.state);
-    }, 100);
+      if(this.#game.state.isOver) {
+        this.#inputController.pause();
+      }
+    }, 500);
 
     this.#inputController.on(EVENTS.istreamPause, () => 
       this.#scheduler.clearInterval(interval)

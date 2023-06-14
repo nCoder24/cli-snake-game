@@ -6,7 +6,6 @@
   "version": "1.0.0",
   "description": "snake game",
   "main": "game.js",
-  "devDependencies": {},
   "scripts": {
     "start": "node main.js",
     "test": "node --test"
